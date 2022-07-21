@@ -1,4 +1,5 @@
 
+
 package com.payment.service;
 
 import com.payment.common.Guest;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.payment.entity.Payments;
+import com.payment.model.MonthlySummary;
 import com.payment.repos.PayRepos;
 import org.springframework.web.client.RestTemplate;
 
@@ -237,6 +239,30 @@ response.setMessage("something went wrong");
 
 		}
 
+	}
+
+	@Override
+	public ResponseEntity getMonthlySummary(int month, int year,int buildingId) {
+
+		Response response=new Response();
+		MonthlySummary ms=new MonthlySummary();
+		try {
+			 double incomeAmount=repo.getCountOfAmountPaidByBuildingId(month, year, buildingId);
+			  double refundAmount=repo.getCountOfRefundByBuildingId(month, year, buildingId);
+			  ms.setIncomeAmount(incomeAmount);
+			ms.setRefundAmount(refundAmount);
+			response.setStatus(true);
+			response.setData(ms);
+				return new ResponseEntity<>(response,HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			response.setStatus(true);
+            response.setData(null);
+			return new ResponseEntity<>(response,HttpStatus.OK);
+
+		}
+		   
 	}
 
 }
